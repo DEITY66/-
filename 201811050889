@@ -1,1 +1,450 @@
+//第一题
+#include<iostream>
+using namespace std;
+//传参 
+/*
+int fun(int x,int y){
+	int c=0;
+	int p=0,q=0;
+	p=x/10,q=y/10;
+	x=x%10,y=y%10;
+	c=p*10+x*1000+q+y*100;
+	return c;
+}
+int main(){
+	int a=0,b=0;
+	cout<<"input a and b"<<endl;
+	cin>>a>>b;
+	cout<<"c="<<fun(a,b)<<endl;
+	return 0;
+}
+*/
+
+
+//引用
+/* 
+void fun(int &x,int &y,int &z){
+	int c=0;
+	int p=0,q=0;
+	p=x/10,q=y/10;
+	x=x%10,y=y%10;
+	c=p*10+x*1000+q+y*100;
+	z=c;
+}
+int main(){
+	int a=0,b=0,c=0;
+	cout<<"input a and b"<<endl;
+	cin>>a>>b;
+	fun(a,b,c);
+	cout<<"c="<<c<<endl;
+	return 0;
+}
+*/
+
+
+//指针 
+void fun(int *x,int *y){
+	int p=0,q=0,m=0,n=0;
+	p=*x/10,q=*y/10;
+	m=*x%10,n=*y%10;
+	cout<<"c="<<p*10+m*1000+q+n*100<<endl;
+}
+int main(){
+	int a=0,b=0;
+	cout<<"input a and b"<<endl;
+	cin>>a>>b;
+    fun(&a,&b);
+	return 0;
+}
+//第二题
+#include<iostream>
+#include<malloc.h>
+ using namespace std;
+typedef struct _node
+{
+	struct _node* next;
+	int number;
+}node,*linklist;
+ 
+linklist create(int m);
+void joseph(linklist head, int k, int n);
+ 
+int main()
+{
+	linklist head;
+	int m, n, k;
+	cout<<"please input n:"<<endl;
+	cin>>n;
+	cout<<"please input m:"<<endl;
+	cin>>m;
+	cout<<"please input k(start): "<<endl;
+	cin>>k;
+	head = create(m);
+    cout<<"出列顺序为(最后为王):"<<endl;
+	joseph(head,k,n);
+	return 0;
+}
+linklist create(int m)
+{
+	linklist head = (linklist)malloc(sizeof(node));
+	node *tail;
+	int i;
+	head->next = head;
+	head->number = 1;
+	tail = head;
+	for(i=2;i<=m;i++)
+	{
+		node *p = (node*)malloc(sizeof(node));
+		p->number = i;
+		p->next = tail->next;
+		tail->next = p;
+		tail = p;
+	}
+	return head;
+}
+ 
+void joseph(linklist head, int k, int n)
+{
+	int j;
+	node *p;
+	node *q;
+	if(n == 1 && k == 1)
+	{
+		p = head;
+		while(p->next != head)
+		{
+			cout<<p->number;
+			q = p->next;
+			free(p);
+			p = q;
+		}
+		cout<<p->number;
+	}
+	else if(n == 1 && k != 1)
+	{
+		p = head;
+		for(j=1; j<k-1; j++)
+			p = p->next;
+		while(head->next != head)
+		{
+			q = p->next;
+			p->next = q->next;
+			cout<<q->number;
+			if(q == head)
+				head = q->next;
+			free(q);
+		}
+		cout<<head->number;
+	}
+	else
+	{
+		p = head;
+		for(j=1; j<k; j++)
+			p = p->next;
+		while(head->next != head)
+		{
+			for(j=1; j<n-1; j++)
+				p = p->next;
+			q = p->next;
+			p->next = q->next;
+			cout<<q->number<<" ";
+			if(q == head)
+				head = q->next;
+			free(q);
+			p = p->next;
+		}
+		cout<<head->number;
+	}
+}
+//第三题
+#include<iostream> 
+using namespace std;
+  typedef struct link{
+  	int chinese,math,english,sum,num;
+	}link;
+  typedef struct{
+  	int length;
+  	link *elem;
+  }sqlist; 
+	
+	void creat(sqlist &l,int N);
+	
+	int main(){
+		sqlist l;	
+		int N;
+		cin>>N;
+		l.elem=new link[N];
+		l.length=0;
+		creat(l,N);
+		return 0; 
+	}
+	
+	void creat(sqlist &l,int N){        //创建 
+		int i;
+		link r;
+		for(i=0;i<N;i++){
+		r.num=i+1;
+		cin>>r.chinese>>r.math>>r.english ; 
+		r.sum=r.chinese +r.english +r.math ;
+		l.elem[i]=r;
+		l.length++; }
+		//l.team[N]='\0';  
+//		int j;
+//		for(j=0;j<N;j++) 
+//	    cout<<l.elem[j].num <<"  "<<l.elem[j].sum <<endl; 
+//	    cout<<"   "<<endl;
+	    
+	link m;
+	for(int i=0;i<N;i++){
+		for(int j=0;j<N;j++){
+			if(l.elem[j].sum <l.elem[j+1].sum){
+				m=l.elem[j];l.elem[j]=l.elem[j+1];l.elem[j+1]=m;
+			}
+		}
+	}
+	
+	for(int i=0;i<N;i++){
+		for(int j=0;j<N;j++){
+			if(l.elem[j].sum ==l.elem[j+1].sum)
+			if(l.elem[j].chinese<l.elem[j+1].chinese)
+			{
+				m=l.elem[j];l.elem[j]=l.elem[j+1];l.elem[j+1]=m;
+			}
+		}
+	}
+	
+	for(int i=0;i<N;i++){
+		for(int j=0;j<N;j++){
+			if(l.elem[j].sum ==l.elem[j+1].sum&&l.elem[j].chinese==l.elem[j+1].chinese)
+			if(l.elem[j].num>l.elem[j+1].num)
+			{
+				m=l.elem[j];l.elem[j]=l.elem[j+1];l.elem[j+1]=m;
+			}
+		}
+	}
+	
+	
+    for(int j=1;j<=5;j++) 
+	cout<<l.elem[j].num <<"  "<<l.elem[j].sum <<endl; 
+	}
+  
+  //第四题
+  #include <iostream>
+using namespace std;
+int main(){
+	cout<<"input N and M '\n";
+	int M,N,time,l,h;
+	cin>>N>>M;
+	char virus[M][N];
+	int i=0,j=0;
+	for(i=0;i<M;i++)
+	for(j=0;j<N;j++)
+	cin>>virus[i][j];
+	cin>>time;
+	
+    for(int temp=0;temp<time-1;temp++){
+	for(int i=0;i<M;i++){
+	   for(int j=0;j<N;j++){
+	   	if(virus[i][j]=='X'){h=i,l=j;
+	
+	if(virus[h-1][l]!='P'&&h-1>=0){virus[h-1][l]='Y';}
+	if(virus[h+1][l]!='P'){virus[h+1][l]='Y';}
+    if(virus[h][l-1]!='P'&&l-1>=0){virus[h][l-1]='Y';}
+	if(virus[h][l+1]!='P'){virus[h][l+1]='Y';} 
+}
+}
+}
+	for(int i=0;i<M;i++){
+	   for(int j=0;j<N;j++){
+	   	if(virus[i][j]=='Y'){h=i,l=j;
+		if(virus[h-1][l]!='P'&&h-1>=0){virus[h-1][l]='X';}
+		if(virus[h+1][l]!='P'){virus[h+1][l]='X';}
+   	    if(virus[h][l-1]!='P'&&l-1>=0){virus[h][l-1]='X';}
+		if(virus[h][l+1]!='P'){virus[h][l+1]='X';} 
+	
+}
+}
+}
+}
+	for(int i=0;i<M;i++){
+	   for(int j=0;j<N;j++){
+	   	if(virus[i][j]=='Y'){virus[i][j]='X';}	}}
+	
+	
+	for(int i=0;i<M;i++)
+	for(int j=0;j<N;j++){
+	cout<<virus[i][j];
+	if(N==j+1)cout<<endl;
+	}	
+}
+//第五题
+#include <iostream>
+#include <stack>
+using namespace std;
+int Priority(char ch)
+{
+    switch(ch)
+    {
+        case '(':
+            return 3;
+        case '*':
+        case '/':
+            return 2;
+        case '+':
+        case '-':
+            return 1;
+        default:
+            return 0;
+    }
+}
+ 
+int main()
+{
+    stack<char> s_opt;
+    stack<int> s_num;
+    char opt[1024] = {0};
+    int i = 0, tmp = 0, num1 = 0, num2 = 0;
+ 
+    cout << "Please input: " << endl;
+    cin >> opt;
+ 
+    while(opt[i] != '\0' || s_opt.empty() != true)
+    {
+    if(opt[i] >= '0' && opt[i] <= '9')
+    {
+        tmp = tmp * 10 + opt[i] - '0';
+        i++;
+        if(opt[i] > '9' || opt[i] < '0')
+        {
+            s_num.push(tmp);
+            tmp = 0;
+ 
+        }    
+    }
+        else
+        {
+            if((opt[i] == ')') && (s_opt.top() == '('))
+            {
+                s_opt.pop();
+                i++;
+                continue;
+            }
+            
+            if((s_opt.empty()) == true || (Priority(opt[i]) > Priority(s_opt.top())) ||
+              (s_opt.top() == '(' && (opt[i] != ')')))
+            {
+                s_opt.push( opt[i]);
+                i++;
+                continue;
+            }
+    
+            if( ((opt[i] == '\0') &&( s_opt.empty() != true)) || ( (opt[i] == ')') && (s_opt.top() != '(') )||
+                (Priority(opt[i]) <= Priority(s_opt.top()))    )
+            {
+                char ch = s_opt.top();
+                s_opt.pop();
+                int num1,num2;
+                switch(ch)
+                {
+                    case'+':
+                        num1 = s_num.top();
+                        s_num.pop();
+                        num2 = s_num.top();
+                        s_num.pop();
+                        s_num.push(num1 + num2);
+                        break;
+ 
+                    case'-':
+                        num1 = s_num.top();
+                        s_num.pop();
+                        num2 = s_num.top();
+                        s_num.pop();
+                        s_num.push(num1 - num2);
+                    break;    
+                    case'*':
+                        num1 = s_num.top();
+                        s_num.pop();
+                        num2 = s_num.top();
+                        s_num.pop();
+                        s_num.push(num1 * num2);
+                    break;    
+                    case'/':
+                        num1 = s_num.top();
+                        s_num.pop();
+                        num2 = s_num.top();
+                        s_num.pop();
+                        s_num.push(num1 / num2);
+                    break;    
+                }
+            }    
+        }
+    }
+    
+    cout << s_num.top() << endl;
+ 
+    return 0;
+ 
+ 
+}
+
+//第六题
+#include<iostream>
+using namespace std;
+class vehicel
+{
+	protected:
+		int wheels;
+		int weight;
+		
+	public:
+	//	~vehicel(){};
+		vehicel(int Wheels,int Weight) {
+		wheels=Wheels;
+		weight=Weight;	
+};
+	
+		void display(){
+			cout<<"vehicel:"<<endl<<"wheels: "<<wheels<<"  weight: "<<weight<<endl;
+		}
+};
+
+class car: private vehicel{
+	protected:
+		int passeger_load;
+	public:
+		car(int Wheels,int Weight,int PASSEGER):vehicel(Wheels, Weight){ //注意调用方式 
+			passeger_load=PASSEGER;
+		}
+		void Display(){
+			cout<<"car: "<<endl<<"wheels: "<<wheels<<" weight: "<<weight<<" passeger load: "<<passeger_load<<endl;
+		}
+};
+
+class truck: private vehicel{
+	protected:
+		int passeger_load;
+		int payload;
+	public:
+		truck(int Wheels,int Weight,int PASSEGER,int PAYLOAD ):vehicel(Wheels, Weight){
+			passeger_load=PASSEGER;  payload=PAYLOAD;
+		}
+	void Display(){
+		cout<<"truck: "<<endl<<"wheels: "<<wheels<<" weight: "<<weight<<" passeger load: "<<passeger_load
+		<<" payload: "<<payload<<endl;
+	}
+};
+
+
+int main(){
+	vehicel VEHICEL(4,5000);
+	VEHICEL.display ();
+	
+	car CAR(4,2000,10);
+	CAR.Display();
+	 
+	truck TRUCK(8,9000,2,100000);
+	TRUCK.Display() ;
+	return 0 ;
+}
+
 
